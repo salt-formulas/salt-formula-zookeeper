@@ -6,7 +6,7 @@ parameters:
   zookeeper:
     server:
       enabled: true
-      id: ${_param:midonet_database_id}
+      id: ${_param:database_id}
       members:
       - host: ${_param:cluster_node01_address}
         id: 1

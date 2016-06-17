@@ -14,7 +14,7 @@ zookeeper_server_packages:
 
 /var/lib/zookeeper/myid:
   file.managed:
-  - contents: '{{ database.id }}'
+  - contents: '{{ server.id }}'
 
 zookeeper_server_services:
   service.running:
