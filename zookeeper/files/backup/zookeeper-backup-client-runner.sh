@@ -53,7 +53,7 @@
     if [ $RC -gt 0 ] && [ ! -s "$TMPDIR/$TMPLOG" ]; then
         printf "Not a zookeper leader. This script does backup just on zookeper leader.\n"
         [ "$TMPDIR" != "/" ] && rm -rf "$TMPDIR"
-        exit 1
+        exit 0
     else
         # Include the timestamp in the filename
         FILENAME="$BACKUPDIR/$TIMESTAMP/zookeeper-$TIMESTAMP.tar.gz"
