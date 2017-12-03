@@ -1,4 +1,4 @@
-{%- from "zookeeper/map.jinja" import backup with context %}
+{%- from "zookeeper/map.jinja" import backup with context -%}
 #!/bin/sh
 
 # This script is called remotely by zookeeper 'client role' node and returns appropriate backup that client will restore

@@ -1,4 +1,4 @@
-{%- from "zookeeper/map.jinja" import backup with context %}
+{%- from "zookeeper/map.jinja" import backup with context -%}
 #!/bin/bash
 
 # Script to erase old backups on zookeeper 'server role' node.
