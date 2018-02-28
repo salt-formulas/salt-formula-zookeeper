@@ -25,11 +25,13 @@ backup:
     - rsync
     backup_dir: '/var/backups/zookeeper'
     cron: True
+    restrict_clients: True
   RedHat:
     pkgs:
     - rsync
     backup_dir: '/var/backups/zookeeper'
     cron: True
+    restrict_clients: True
 
 {%- endload %}
 

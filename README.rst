@@ -63,7 +63,6 @@ Backup client with local backup only
 
   .. note:: full_backups_to_keep param states how many backup will be stored locally on zookeeper client
 
-
 Backup server rsync
 
 .. code-block:: yaml
@@ -78,6 +77,14 @@ Backup server rsync
             zookeeper_pub_key:
               enabled: true
               key: ssh_rsa
+
+Backup server without strict client restriction
+
+.. code-block:: yaml
+
+    zookeeper:
+      backup:
+        restrict_clients: false
 
 Client restore from local backup:
 
