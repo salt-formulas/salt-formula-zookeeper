@@ -5,6 +5,7 @@
 # Configuration
 # -------------
     BACKUPDIR="{{ backup.backup_dir }}/full"
+    SERVERBACKUPDIR="{{ backup.client.target.get('backup_dir', backup.backup_dir) }}"
     TMPDIR="$( pwd )/${PROGNAME}.tmp${RANDOM}"
     TMPLOG="zookeeper-tmplog.log"
     ZOOKEEPERDIR="/var/lib/zookeeper/version-2/"
@@ -79,7 +80,7 @@
     ssh-keygen -R {{ backup.client.target.host }} 2>&1 | > $RSYNCLOG
     ssh-keyscan {{ backup.client.target.host }} >> ~/.ssh/known_hosts  2>&1 | >> $RSYNCLOG
     echo "Rsyncing files to remote host"
-    /usr/bin/rsync -rhtPv --rsync-path=rsync --progress $BACKUPDIR/* -e ssh zookeeper@{{ backup.client.target.host }}:$BACKUPDIR >> $RSYNCLOG
+    /usr/bin/rsync -rhtPv --rsync-path=rsync --progress $BACKUPDIR/* -e ssh zookeeper@{{ backup.client.target.host }}:$SERVERBACKUPDIR >> $RSYNCLOG
 
     if [ -s $RSYNCLOG ] && ! grep -q "rsync error: " $RSYNCLOG; then
             echo "Rsync to remote host completed OK"

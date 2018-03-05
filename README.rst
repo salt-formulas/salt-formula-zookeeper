@@ -46,6 +46,7 @@ Backup client with ssh/rsync remote host
           hours_before_full: 24
           target:
             host: cfg01
+            backup_dir: server-home-dir
 
   .. note:: full_backups_to_keep param states how many backup will be stored locally on zookeeper client.
             More options to relocate local backups can be done using salt-formula-backupninja.
