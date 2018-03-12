@@ -24,13 +24,12 @@ zookeeper_backup_dir:
   - group: root
   - makedirs: true
 
+{%- if backup.cron %}
+
 zookeeper_backup_runner_cron:
   cron.present:
   - name: /usr/local/bin/zookeeper-backup-runner.sh
   - user: root
-{%- if not backup.cron %}
-  - commented: True
-{%- endif %}
 {%- if backup.client.backup_times is defined %}
 {%- if backup.client.backup_times.dayOfWeek is defined %}
   - dayweek: {{ backup.client.backup_times.dayOfWeek }}
@@ -59,6 +58,16 @@ zookeeper_backup_runner_cron:
 {%- endif %}
   - require:
     - file: zookeeper_backup_runner_script
+
+{%- else %}
+
+zookeeper_backup_runner_cron:
+  cron.absent:
+  - name: /usr/local/bin/zookeeper-backup-runner.sh
+  - user: root
+
+{%- endif %}
+
 
 {%- if backup.client.restore_latest is defined %}
 
@@ -147,6 +156,13 @@ zookeeper_key_{{ key.key }}:
   - require:
     - file: {{ backup.backup_dir }}/full
 
+{%- else %}
+
+zookeeper_key_{{ key.key }}:
+  ssh_auth.absent:
+  - user: zookeeper
+  - name: {{ key.key }}
+
 {%- endif %}
 
 {%- endfor %}
@@ -160,17 +176,25 @@ zookeeper_server_script:
   - require:
     - pkg: zookeeper_backup_server_packages
 
+{%- if backup.cron %}
+
 zookeeper_server_cron:
   cron.present:
   - name: /usr/local/bin/zookeeper-backup-runner.sh
   - user: zookeeper
-{%- if not backup.cron %}
-  - commented: True
-{%- endif %}
   - minute: 0
   - hour: 2
   - require:
     - file: zookeeper_server_script
+
+{%- else %}
+
+zookeeper_server_cron:
+  cron.absent:
+  - name: /usr/local/bin/zookeeper-backup-runner.sh
+  - user: zookeeper
+
+{%- endif %}
 
 zookeeper_server_call_restore_script:
   file.managed:
