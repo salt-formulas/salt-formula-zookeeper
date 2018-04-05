@@ -126,6 +126,14 @@ zookeeper_user:
     - user: zookeeper_user
     - pkg: zookeeper_backup_server_packages
 
+{{ backup.backup_dir }}/.ssh:
+  file.directory:
+  - mode: 700
+  - user: zookeeper
+  - group: zookeeper
+  - require:
+    - user: zookeeper_user
+
 {{ backup.backup_dir }}/.ssh/authorized_keys:
   file.managed:
   - user: zookeeper
@@ -134,6 +142,7 @@ zookeeper_user:
   - source: salt://zookeeper/files/backup/authorized_keys
   - require:
     - file: {{ backup.backup_dir }}/full
+    - file: {{ backup.backup_dir }}/.ssh
 
 zookeeper_server_script:
   file.managed:
