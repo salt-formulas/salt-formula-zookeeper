@@ -18,7 +18,7 @@ done
 # Configuration
 # -------------
     BACKUPDIR="{{ backup.backup_dir }}/full"
-    SERVERBACKUPDIR="{{ backup.client.target.get('backup_dir', backup.backup_dir) }}"
+    SERVERBACKUPDIR="{{ backup.client.target.get('backup_dir', backup.backup_dir) }}/full"
     TMPDIR="$( pwd )/${PROGNAME}.tmp${RANDOM}"
     TMPLOG="zookeeper-tmplog.log"
     ZOOKEEPERDIR="/var/lib/zookeeper/version-2/"
