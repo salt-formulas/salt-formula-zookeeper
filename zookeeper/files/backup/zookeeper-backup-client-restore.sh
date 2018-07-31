@@ -76,6 +76,28 @@
 # LOAD BACKUP FILE
 # ----------------
     # Extract snapshot package
+
+    {%- if backup.client.containers is defined %}
+    BACKUPFILE_PARENT_DIR=`dirname $BACKUPFILE`
+    {%- for container_name in backup.client.containers %}
+
+    docker exec {{ container_name }} mkdir -p $BACKUPFILE_PARENT_DIR
+    docker cp $BACKUPFILE {{ container_name }}:$BACKUPFILE
+
+    docker exec {{ container_name }} tar -xvzf $BACKUPFILE -P
+    RC=$?
+
+    if [ $RC -gt 0 ]; then
+        printf "\nBackup file $BACKUPFILE failed to load.\n"
+        exit 1
+    else
+        printf "\nBackup file $BACKUPFILE was succesfully loaded.\n"
+        touch $DBALREADYRESTORED
+    fi
+
+    {%- endfor %}
+    {%- else %}
+
     tar -xvzf "$BACKUPFILE" -P
     RC=$?
 
@@ -86,5 +108,7 @@
         printf "\nBackup file $BACKUPFILE was succesfully loaded.\n"
         touch $DBALREADYRESTORED
     fi
+
+    {%- endif %}
 
 # Fin.

@@ -74,8 +74,12 @@ done
     else
         # Include the timestamp in the filename
         FILENAME="$BACKUPDIR/$TIMESTAMP/zookeeper-$TIMESTAMP.tar.gz"
+ 
+        {%- if backup.client.containers is defined %}
+        {%- for container_name in backup.client.containers %}
 
-        tar -zcvf $FILENAME -P $ZOOKEEPERDIR > /dev/null 2>&1
+        docker exec {{ container_name }} mkdir -p $BACKUPDIR/$TIMESTAMP
+        docker exec {{ container_name }} tar -zcvf $FILENAME -P $ZOOKEEPERDIR > /dev/null 2>&1
         RC=$?
 
         if [ $RC -gt 0 ]; then
@@ -86,6 +90,27 @@ done
             printf "Successfully created a backup tar file.\n"
             [ "$TMPDIR" != "/" ] && rm -rf "$TMPDIR"
         fi
+        docker cp {{ container_name }}:$FILENAME $BACKUPDIR/$TIMESTAMP
+        docker exec {{ container_name }} rm $FILENAME
+
+        {%- endfor %}
+        {%- else %}
+        tar -zcvf $FILENAME -P $ZOOKEEPERDIR > /dev/null 2>&1
+
+        RC=$?
+
+        if [ $RC -gt 0 ]; then
+            printf "Error generating tar archive.\n"
+            [ "$TMPDIR" != "/" ] && rm -rf "$TMPDIR"
+            exit 1
+        else
+            printf "Successfully created a backup tar file.\n"
+            [ "$TMPDIR" != "/" ] && rm -rf "$TMPDIR"
+        fi
+
+        {%- endif %}
+
+
     fi
 
 # rsync just the new or modified backup files
